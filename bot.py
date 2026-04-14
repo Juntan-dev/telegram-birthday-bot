@@ -5,7 +5,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 import os
 
-BOT_TOKEN = os.environ.get("8264310379:AAFG6N-pdJYliK4qRbm-Q2lVXV7E5Mhp3wY")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 if not BOT_TOKEN:
     raise ValueError("BOT_TOKEN is missing")
 
