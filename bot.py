@@ -4,6 +4,8 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 if not BOT_TOKEN:
@@ -29,13 +31,31 @@ BIRTHDAYS = {
     "Komi": "28-11"
 }
 
+def run_dummy_server():
+    port = int(os.environ.get("PORT", 10000))
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(b"Bot is running")
+
+    server = HTTPServer(("0.0.0.0", port), Handler)
+    server.serve_forever()
+
 async def get_id(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
-    await update.message.reply_text(f"Chat ID is: {chat_id}")
+    await update.message.reply_text(
+        f"Chat ID is: {chat_id}",
+        allow_sending_without_reply=True
+    )
     print("CHAT ID:", chat_id)
 
 async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Bot is working ✅")
+    await update.message.reply_text(
+        "Bot is working ✅",
+        allow_sending_without_reply=True
+    )
 
 async def check_birthdays(context: ContextTypes.DEFAULT_TYPE):
     today = datetime.now(TIMEZONE).strftime("%d-%m")
@@ -52,6 +72,8 @@ async def check_birthdays(context: ContextTypes.DEFAULT_TYPE):
         )
 
 def main():
+    threading.Thread(target=run_dummy_server, daemon=True).start()
+
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("id", get_id))
