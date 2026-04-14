@@ -4,7 +4,11 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 import os
-BOT_TOKEN = os.environ.get("8264310379:AAHsc8KWiRXYias-znZ0wW050Ecy7gqja1E")
+
+BOT_TOKEN = os.environ.get("8264310379:AAFG6N-pdJYliK4qRbm-Q2lVXV7E5Mhp3wY")
+if not BOT_TOKEN:
+    raise ValueError("BOT_TOKEN is missing")
+
 GROUP_CHAT_ID = -4925926064
 TIMEZONE = ZoneInfo("Asia/Kuala_Lumpur")
 
